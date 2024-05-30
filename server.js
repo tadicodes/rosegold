@@ -1,29 +1,21 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser');
+const connectDB = require('./config/db');
 const cors = require('cors');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 5000;
+require('dotenv').config();
 
-app.use(bodyParser.json());
+// Connect to MongoDB
+connectDB();
+
+// Middleware
 app.use(cors());
+app.use(express.json({ extended: false }));
 
-// Database connection
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log(err));
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/products', require('./routes/product'));
+app.use('/api/orders', require('./routes/order'));
 
-// Sample route
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
