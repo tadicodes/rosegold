@@ -16,7 +16,12 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/product'));
 app.use('/api/orders', require('./routes/order'));
 
-// Error Handling
+// Error Handler
+function errorHandler(err, req, res, next) {
+  res.status(500).json({ message: err.message });
+}
+
+// Use the error handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
